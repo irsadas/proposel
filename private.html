@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Secret Gallery 🔒</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ff8fa3;
+            --bg: #fff0f3;
+            --text: #590d22;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #fff0f3, #ffe5ec, #e3f2fd, #f3e5f5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 240, 243, 0.9), rgba(255, 229, 236, 0.9));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 77, 109, 0.15);
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            max-width: 90%;
+            width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lock-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            background: #fff0f3;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.1);
+        }
+
+        /* Shake Animation */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 2px solid var(--secondary);
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            outline: none;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 300px;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(255, 77, 109, 0.2);
+            transform: scale(1.05);
+        }
+
+        button {
+            padding: 12px 40px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Gallery Grid */
+        #gallery-container {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px 20px;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .photo-card {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            transform: rotate(var(--r));
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 10;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .back-link {
+            margin-top: 50px;
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Floating Hearts */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.15);
+            animation: float 6s infinite ease-in-out;
+            z-index: -1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Password Protection Overlay -->
+    <div id="login-overlay">
+        <!-- Floating Background Hearts -->
+        <div class="bg-heart" style="top: 10%; left: 10%; font-size: 3rem;">❤️</div>
+        <div class="bg-heart" style="top: 20%; right: 10%; font-size: 2rem; animation-delay: 1s;">💖</div>
+        <div class="bg-heart" style="bottom: 15%; left: 20%; font-size: 4rem; animation-delay: 2s;">💕</div>
+        <div class="bg-heart" style="bottom: 10%; right: 30%; font-size: 2.5rem; animation-delay: 1.5s;">🔒</div>
+
+        <div class="login-card" id="loginCard">
+            <div class="lock-icon"><i class="fas fa-lock" id="lockIcon"></i></div>
+            <h1>Shh... It's a Secret! 🤫</h1>
+            <p style="margin-bottom: 30px; color: #666; font-size: 0.95rem;">Enter the magic word to unlock our private memories.</p>
+            <input type="password" id="passwordInput" placeholder="Enter Password">
+            <br>
+            <button onclick="checkPassword()">Unlock Gallery</button>
+            <p id="error-msg" style="color: #ff4d6d; display: none; margin-top: 15px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-exclamation-circle"></i> Wrong password! Hint: love</p>
+        </div>
+    </div>
+
+    <!-- Protected Content -->
+    <div id="gallery-container">
+        <h1>Our Private World ❤️</h1>
+        <p>Just for your eyes only...</p>
+        
+        <div class="gallery-grid">
+            <!-- Replace these src with your private photo paths -->
+            
+            <div class="photo-card" style="--r: 3deg;">
+                <img src="Snapchat-2029212057.jpg" alt="Secret 2">
+            </div>
+            <div class="photo-card" style="--r: -1deg;">
+                <img src="IMG-20250820-WA0184.jpg" alt="Secret 3">
+            </div>
+            <div class="photo-card" style="--r: 2deg;">
+                <img src="IMG-20250722-WA0038.jpg" alt="Secret 4">
+            </div>
+            <div class="photo-card" style="--r: 2deg;">
+                <img src="IMG_20250812_154040_1.jpg" alt="Secret 4">
+            </div>
+            <div class="photo-card" style="--r: 2deg;">
+                <img src="1682481005533.jpg" alt="Secret 4">
+            </div>
+            <div class="photo-card" style="--r: -2deg;">
+                <img src="Snapchat-1223001426.jpg" alt="Secret 1">
+            </div>
+        </div>
+
+        <a href="proposal.html" class="back-link">← Back to Proposal</a>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value.toLowerCase();
+            const correctPassword = "kukurmutta"; // Set your password here
+            
+            if(input === correctPassword) {
+                // Animate Unlock
+                const icon = document.getElementById('lockIcon');
+                icon.classList.remove('fa-lock');
+                icon.classList.add('fa-lock-open');
+                
+                setTimeout(() => {
+                    document.getElementById('login-overlay').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('login-overlay').style.display = 'none';
+                        document.getElementById('gallery-container').style.display = 'block';
+                    }, 500);
+                }, 800);
+            } else {
+                const errorMsg = document.getElementById('error-msg');
+                const loginCard = document.getElementById('loginCard');
+                errorMsg.style.display = 'block';
+                loginCard.classList.add('shake');
+                setTimeout(() => loginCard.classList.remove('shake'), 500);
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+</html>
